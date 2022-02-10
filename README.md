@@ -10,11 +10,11 @@ python3 httppost.py --url http://blogtest.vnprogramming.com/ --user test --passw
 python3 httppost.py --url http://blogtest.vnprogramming.com/ --user test --password test123QWE@ADtrag
 ----
 
-#httpupload
+#httpupload.py
 python3 httpupload.py --url http://blogtest.vnprogramming.com/ --user test --password test123QWE@AD --localfile /home/trang/Desktop/challenge04/anh1.png
 -----
 
-#httpdownload
+#httpdownload.py
 python3 httpdownload.py --url http://blogtest.vnprogramming.com/ --remotefile /wp-content/uploads/2022/02/anh1-2.jpg
 
  
