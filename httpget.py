@@ -1,50 +1,25 @@
-import socket, sys, html, argparse
+import socket, html, argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--url")
 args = parser.parse_args()
 
-
-def recvall(s):
-    total_data = []
-    response = s.recv(4096)
-    while (len(response) > 0):
-        total_data.append(response.decode())
-        response = s.recv(4096)
-    response = ''.join(total_data)
-    return response
-
-
-def getDomain(url):
-    domain = ""
-    if url[0:8] == "https://":
-        for i in range(8, len(url)):
-            if url[i] == '/':
-                break
-            domain += url[i]
-    if url[0:7] == "http://":
-        for i in range(7, len(url)):
-            if url[i] == '/':
-                break
-            domain += url[i]
-    return domain
-
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 url = args.url
-domain = getDomain(url)
-client.connect((domain, 80))
-request = "GET / HTTP/1.1\r\nHOST: "+domain+"\r\n\r\n"
-client.send(request.encode())
-response = recvall(client)
-title = ""
-for i in range(0, len(response)):
-    if title != "":
-        break
-    if response[i:i+7] == "<title>":
-        for j in range(i+7, len(response)):
-            if response[j:j+8] == "</title>":
-                title = response[i+7:j]
-                break
+get_url = ""
+i = 8
+if url[0:7] == "http://":
+	i = 7
+get_url += url[i:(len(url)-1)]
+print(get_url)
+s.connect((get_url, 80))
+request = "GET / HTTP/1.1\r\nHost: "+get_url+"\r\n\r\n"
+s.send(request.encode())
 
-print("Title: ", html.unescape(title))
+response = s.recv(2048)
+s.close()
+response = response.decode("utf8")
+title_start = response.find("<title>")
+title_end = response.find("</title>")
+
+print("Title: ", html.unescape(response[title_start+7:title_end]))
