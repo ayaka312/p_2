@@ -18,10 +18,10 @@ s.connect((get_url, 80))
 request = "GET " + filepath + " HTTP/1.1\r\nHost: " + get_url + "\r\n\r\n"
 s.send(request.encode())
 
-respons = s.recv(2048)
 s.close()
 response = bytearray()
 while True:
+	respons = s.recv(2048)
 	if not respons:
 		break
 	response += respons
