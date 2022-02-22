@@ -38,7 +38,7 @@ if "HTTP/1.1 200 OK" in response:
             break
     print("Kich thuoc file anh: " + image_len.decode() + "bytes")
     image_type = response.split("\r\n\r\n")[-1]
-    image_url = "/home/tragserver/Desktop/code/challenge4/" + image_name
+    image_url = "/home/trang/Desktop/challenge04/" + image_name
     open(image_url, "wb").write(image_type)
 else:
     print("Khong ton tai file anh")
