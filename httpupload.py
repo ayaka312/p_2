@@ -70,7 +70,7 @@ if "HTTP/1.1 200 OK" in response_upfile:
 	response_upfile_start = response_upfile.find("\"url\":\"") 
 	url_upload = ""
 	for j in range(response_upfile_start + 7, len(response_upfile)):
-		if(response_upfile[j] == "\"":
+		if(response_upfile[j] == "\""):
 			break
 		url_upload += response_upfile[j]
 		url_upload.replace("\\", "")
