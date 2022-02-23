@@ -7,7 +7,7 @@ args = parser.parse_args()
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 url = args.url
 filepath = args.remotefile
-image_name = filepath.split("/"[-1])
+image_name = filepath.split("/")[-1]
 get_url = ""
 i = 8
 if url[0:7] == "http://":
@@ -24,19 +24,13 @@ while True:
 		break
 	response += respons
 s.close()
-print(response)
+response = response.decode('iso-8859-1')
 if "HTTP/1.1 200 OK" in response:
-    image_len = ""
-    image_len_start = response.find("Content-Length: ")
-    for j in range(image_len_start + 16, len(response)):
-        if chr(response[j].isdigit == True):
-            image_len += response[j]
-        else:
-            break
-    print("Kich thuoc file anh: " + image_len.decode() + "bytes")
+    image_len = len(response.split('\r\n\r\n')[1].encode('iso-8859-1'))
+    print("Kich thuoc file anh: " + str(image_len) + " bytes")
     image_type = response.split("\r\n\r\n")[-1]
-    image_url = "/home/trang/Desktop/challenge04/" + image_name
-    open(image_url, "wb").write(image_type)
+    image_url =  image_name
+    open(image_url, "wb").write(image_type.encode('iso-8859-1'))
 else:
     print("Khong ton tai file anh")
     exit(0)
