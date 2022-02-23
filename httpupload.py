@@ -25,9 +25,9 @@ request += "Content-Type: application/x-www-form-urlencoded\r\n"
 request += "\r\n" + request_body
 
 s.send(request.encode())
-
 response = s.recv(2048)
 s.close()
+
 response = response.decode("utf8")
 cookie = ""
 if "HTTP/1.1 302 Found" not in response and "login_error" in response:
@@ -40,7 +40,13 @@ request_cookie = "GET /wp-admin/media-new.php HTTP/1.1\r\nHost: " + get_url + "\
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((get_url, 80))
 s.send(request_cookie.encode())
-response_cookie = s.recv(2048)
+response_cookie =  b''
+while True:
+	respons = s.recv(2048)
+	if not respons:
+		break
+	response_cookie += respons
+s.close()
 response_cookie = response_cookie.decode("utf8")
 response_cookie_index = response_cookie.find("\"_wpnonce\":\"")
 res = response_cookie[response_cookie_index+ 12:response_cookie_index + 22]
@@ -53,17 +59,25 @@ request_file = "------WebKitFormBoundary"+"\r\n" + \
 	"Content-Disposition: form-data; name=\"_wpnonce\""+"\r\n\r\n"+res+"\r\n"+"------WebKitFormBoundary" + "\r\n" + \
 	"Content-Disposition: form-data; name=\"async-upload\"; filename=\"" + filename + "\""+"\r\n" + \
 	"Content-Type: image/"+filetype+"\r\n\r\n"
-request_file = request_file.encode() + file_img + b"\r\n" + b"------WebKitFormBoundary--"
+request_file = request_file.encode() + file_img + b"\r\n" + b"------WebKitFormBoundary--\r\n"
 request = "POST /wp-admin/async-upload.php HTTP/1.1\r\n"+"Host: " + get_url + "\r\n" 
 request += 'Cookie:' + cookie + '\r\n'
 request += "Content-Length: " + str(len(request_file)) + "\r\n"
-request += "Content-Type: application/x-www-form-urlencoded\r\n"
+request += "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary\r\n"
+request += 'Connection: close\r\n'
 request = request.encode() + request_file   
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((get_url, 80))
 s.send(request)
-response_upfile = s.recv(2048)
-response_upfile = response_upfile.decode("utf8")
+
+response_upfile =  b''
+while True:
+	respon = s.recv(2048)
+	if not respon:
+		break
+	response_upfile += respon
+s.close()
+response_upfile = response_upfile.decode()
 s.close()
 if "HTTP/1.1 200 OK" in response_upfile:
 	print("Upload success\r\nFile upload url: ")
