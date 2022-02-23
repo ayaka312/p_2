@@ -6,7 +6,6 @@ args = parser.parse_args()
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 url = args.url
-get_url = ""
 i = 8
 if url[0:7] == "http://":
 	i = 7
