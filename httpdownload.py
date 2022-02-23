@@ -17,15 +17,14 @@ s.connect((get_url, 80))
 
 request = "GET " + filepath + " HTTP/1.1\r\nHost: " + get_url + "\r\n\r\n"
 s.send(request.encode())
-response = bytearray()
+response =  b''
 while True:
 	respons = s.recv(2048)
 	if not respons:
 		break
 	response += respons
-	
-response.decode("utf8")
 s.close()
+print(response)
 if "HTTP/1.1 200 OK" in response:
     image_len = ""
     image_len_start = response.find("Content-Length: ")
